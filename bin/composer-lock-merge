@@ -1,6 +1,6 @@
-<?xml version="1.0"?>
+#!/usr/bin/env php
+<?php
 
-<!--
 /**
  * Copyright 2015 Fabian Grutschus. All rights reserved.
  *
@@ -34,34 +34,30 @@
  * @license   BSD-2-Clause
  * @link      http://github.com/fabiang/composer-lock-merge
  */
--->
 
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.7/phpunit.xsd"
-    bootstrap="./bootstrap.php"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    forceCoversAnnotation="true"
-    strict="true"
-    verbose="true">
+$autoload = false;
 
-        <testsuites>
-            <testsuite name="Fabiang_LockMerge">
-                <directory>src/</directory>
-            </testsuite>
-        </testsuites>
+foreach (array(
+    __DIR__ . '/../../../autoload.php', // from installed vendor path
+    __DIR__ . '/../vendor/autoload.php', // from cloned respository
+) as $file) {
+    if (file_exists($file)) {
+        $autoload = true;
+        require $file;
+        break;
+    }
+}
 
-        <filter>
-            <whitelist>
-                <directory>../src/</directory>
-            </whitelist>
-        </filter>
+if (false === $autoload) {
+    echo 'You need to set up the project dependencies using the following commands:' . PHP_EOL .
+         'wget http://getcomposer.org/composer.phar' . PHP_EOL .
+         'php composer.phar install' . PHP_EOL;
+    exit(1);
+}
 
-        <php>
-            <ini name="error_reporting" value="-1"/>
-            <ini name="date.timezone" value="Europe/Berlin"/>
-        </php>
-</phpunit>
+unset($autoload, $file);
+
+use Fabiang\ComposerLockMerge\Console\Application;
+
+$application = new Application('composer-lock-merge', '1.0.x-dev');
+$application->run();

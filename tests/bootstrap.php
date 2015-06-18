@@ -31,7 +31,7 @@
  * @author    Fabian Grutschus <f.grutschus@lubyte.de>
  * @copyright 2015 Fabian Grutschus. All rights reserved.
  * @license   BSD-2-Clause
- * @link      http://github.com/fabiang/lock-merge
+ * @link      http://github.com/fabiang/composer-lock-merge
  */
 
 $autoloaderFile = __DIR__ . '/../vendor/autoload.php';

@@ -1,6 +1,5 @@
-<?xml version="1.0"?>
+<?php
 
-<!--
 /**
  * Copyright 2015 Fabian Grutschus. All rights reserved.
  *
@@ -34,34 +33,26 @@
  * @license   BSD-2-Clause
  * @link      http://github.com/fabiang/composer-lock-merge
  */
--->
 
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.7/phpunit.xsd"
-    bootstrap="./bootstrap.php"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    forceCoversAnnotation="true"
-    strict="true"
-    verbose="true">
+namespace Fabiang\ComposerLockMerge\Console\Command;
 
-        <testsuites>
-            <testsuite name="Fabiang_LockMerge">
-                <directory>src/</directory>
-            </testsuite>
-        </testsuites>
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
-        <filter>
-            <whitelist>
-                <directory>../src/</directory>
-            </whitelist>
-        </filter>
+class ComposerLockMergeCommand extends Command
+{
 
-        <php>
-            <ini name="error_reporting" value="-1"/>
-            <ini name="date.timezone" value="Europe/Berlin"/>
-        </php>
-</phpunit>
+    protected function configure()
+    {
+        $this->setName('composer-lock-merge')
+            ->setDescription('Tool that lets you easily merge composer.lock files');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+
+    }
+}

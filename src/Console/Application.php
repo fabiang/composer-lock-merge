@@ -1,6 +1,5 @@
-<?xml version="1.0"?>
+<?php
 
-<!--
 /**
  * Copyright 2015 Fabian Grutschus. All rights reserved.
  *
@@ -34,34 +33,38 @@
  * @license   BSD-2-Clause
  * @link      http://github.com/fabiang/composer-lock-merge
  */
--->
 
-<phpunit
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.7/phpunit.xsd"
-    bootstrap="./bootstrap.php"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    forceCoversAnnotation="true"
-    strict="true"
-    verbose="true">
+namespace Fabiang\ComposerLockMerge\Console;
 
-        <testsuites>
-            <testsuite name="Fabiang_LockMerge">
-                <directory>src/</directory>
-            </testsuite>
-        </testsuites>
+use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Input\InputInterface;
+use Fabiang\ComposerLockMerge\Console\Command\ComposerLockMergeCommand;
 
-        <filter>
-            <whitelist>
-                <directory>../src/</directory>
-            </whitelist>
-        </filter>
+class Application extends BaseApplication
+{
 
-        <php>
-            <ini name="error_reporting" value="-1"/>
-            <ini name="date.timezone" value="Europe/Berlin"/>
-        </php>
-</phpunit>
+    protected function getCommandName(InputInterface $input)
+    {
+        return 'composer-lock-merge';
+    }
+
+    protected function getDefaultCommands()
+    {
+        // Keep the core default commands to have the HelpCommand
+        // which is used when using the --help option
+        $defaultCommands = parent::getDefaultCommands();
+
+        $defaultCommands[] = new ComposerLockMergeCommand();
+
+        return $defaultCommands;
+    }
+
+    public function getDefinition()
+    {
+        $inputDefinition = parent::getDefinition();
+        // clear out the normal first argument, which is the command name
+        $inputDefinition->setArguments();
+
+        return $inputDefinition;
+    }
+}
