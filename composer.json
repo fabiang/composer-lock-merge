@@ -2,13 +2,11 @@
     "name": "fabiang/lock-merge",
     "description": "Composer plugin that lets you easily merge composer.lock files",
     "homepage": "http://github.com/fabiang/lock-merge",
-    "type": "composer-plugin",
+    "type": "application",
     "require": {
-        "php": ">=5.3.3",
-        "composer-plugin-api": "^1.0"
+        "php": ">=5.3.3"
     },
     "require-dev": {
-        "composer/composer": "@dev",
         "phpunit/phpunit": "^4.7"
     },
     "license": "BSD-2-Clause",
@@ -24,8 +22,5 @@
         "psr-4": {
             "Fabiang\\LockMerge\\": "src/"
         }
-    },
-    "extra": {
-        "class": "Fabiang\\LockMerge\\Plugin"
     }
 }
