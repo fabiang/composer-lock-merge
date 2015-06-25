@@ -34,24 +34,32 @@
  * @link      http://github.com/fabiang/composer-lock-merge
  */
 
-namespace Fabiang\ComposerLockMerge\Console;
+namespace Fabiang\ComposerLockMerge\Console\Command;
 
-use Symfony\Component\Console\Application as BaseApplication;
-use Fabiang\ComposerLockMerge\Console\Command\MergeCommand;
-use Fabiang\ComposerLockMerge\Console\Command\SetupCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
-class Application extends BaseApplication
+class MergeCommand extends Command
 {
 
-    protected function getDefaultCommands()
+    protected function configure()
     {
-        // Keep the core default commands to have the HelpCommand
-        // which is used when using the --help option
-        $defaultCommands = parent::getDefaultCommands();
+        $this->setName('merge')
+            ->setDescription('Merge composer.lock')
+            ->addArgument('base', InputArgument::REQUIRED, 'Base name')
+            ->addArgument('remote', InputArgument::REQUIRED, 'Remote name')
+            ->addArgument('local', InputArgument::REQUIRED, 'Local name')
+            ->addArgument('merged', InputArgument::REQUIRED, 'Merged name');
+    }
 
-        $defaultCommands[] = new MergeCommand();
-        $defaultCommands[] = new SetupCommand();
-
-        return $defaultCommands;
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $base   = $input->getArgument('base');
+        $remote = $input->getArgument('remote');
+        $local  = $input->getArgument('local');
+        $merged = $input->getArgument('merged');
     }
 }

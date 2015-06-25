@@ -41,18 +41,76 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Jelix\IniFile\IniModifier;
+use Fabiang\ComposerLockMerge\Console\Command\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class ComposerLockMergeCommand extends Command
+class SetupCommand extends Command
 {
 
     protected function configure()
     {
-        $this->setName('composer-lock-merge')
-            ->setDescription('Tool that lets you easily merge composer.lock files');
+        $this->setName('setup')
+            ->setDescription('Setup your Git environment')
+            ->addArgument(
+                'git-config',
+                InputArgument::OPTIONAL,
+                'Path to Git config file',
+                getenv('HOME') . '/.gitconfig'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $configPath = rtrim($this->getConfigurationPath($input), '/');
 
+        if (!is_file($configPath)) {
+            if (is_dir($configPath)) {
+                $configPath .= '/.gitconfig';
+            } else {
+                throw new InvalidArgumentException(sprintf('Config path "%s" does not exist', $configPath));
+            }
+        }
+
+        $mergeTool = $this->getMergtoolConfig();
+
+        $output->writeln(sprintf(
+            "<info>Would write the following configuration to \"%s\":</info>\n\n%s",
+            $configPath,
+            $mergeTool
+        ));
+
+        $helper   = $this->getHelper('question');
+        $question = new ConfirmationQuestion('<info>Continue with this action [y/n]?</info> ', false);
+
+        if (!$helper->ask($input, $output, $question)) {
+            return;
+        }
+
+        copy($configPath, $configPath . '.bak');
+        file_put_contents($configPath, $mergeTool, FILE_APPEND);
+    }
+
+    private function getConfigurationPath(InputInterface $input)
+    {
+        if ($input->hasArgument('git-config')) {
+            return $input->getArgument('git-config');
+        }
+
+        return getenv('HOME') . '/.gitconfig';
+    }
+
+    private function getMergtoolConfig()
+    {
+        return sprintf("
+[mergetool \"composer-lock-merge\"]
+    cmd = %s merge \"\$PWD/\$BASE\" \"\$PWD/\$REMOTE\" \"\$PWD/\$LOCAL\" \"\$PWD/\$MERGED\"
+    keepTemporaries = false
+
+[alias]
+    composer-lock-merge = mergetool --tool=composer-lock-merge --no-prompt composer.lock
+",
+            realpath($_SERVER['PHP_SELF'])
+        );
     }
 }
