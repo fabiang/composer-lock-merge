@@ -41,7 +41,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Jelix\IniFile\IniModifier;
 use Fabiang\ComposerLockMerge\Console\Command\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
@@ -75,7 +74,7 @@ class SetupCommand extends Command
         $mergeTool = $this->getMergtoolConfig();
 
         $output->writeln(sprintf(
-            "<info>Would write the following configuration to \"%s\":</info>\n\n%s",
+            "<info>Would write the following configuration to \"%s\":</info>\n%s",
             $configPath,
             $mergeTool
         ));
